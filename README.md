@@ -21,14 +21,63 @@ When you upload a video, Aginno automatically analyzes and indexes its content:
 Once indexed, you can edit videos using natural language:
 
 1. **Natural Language Input** - "Create a short, inspiring highlight reel"
-2. **GPT-4o Orchestration** - AI agent plans the editing workflow
-3. **Tool-Based Execution** - Agent uses specialized tools:
+2. **LangGraph DAG Orchestration** - AI workflow orchestrated using LangGraph's directed acyclic graph (DAG) architecture for reliable, state-managed tool execution
+3. **GPT-4o Planning** - AI agent analyzes requirements and creates execution plan
+4. **Tool-Based Execution** - Agent uses specialized tools in coordinated workflows:
    - `query_semantic_index` - Find relevant segments
    - `extract_highlight_segment` - Extract key moments
    - `apply_smart_cuts` - Optimize timing and pacing
    - `stitch_segments` - Combine clips with transitions
    - `render_final_reel` - Generate final output
-4. **Automatic Rendering** - FFmpeg creates the final video with watermarks, fades, and effects
+5. **Automatic Rendering** - FFmpeg creates the final video with watermarks, fades, and effects
+
+## LangGraph DAG Tool Orchestration
+
+Aginno leverages **LangGraph** to orchestrate complex AI agent workflows using a directed acyclic graph (DAG) architecture. This provides several key advantages:
+
+### Why LangGraph?
+- **Reliable Execution** - State management ensures consistent workflow execution even with failures
+- **Tool Coordination** - Multiple AI tools work together in coordinated, dependency-aware sequences
+- **Error Recovery** - Built-in retry mechanisms and error handling for robust video processing
+- **Scalable Workflows** - Complex editing operations broken down into manageable, parallelizable steps
+
+### Workflow Architecture
+```
+Natural Language Input
+        ↓
+    GPT-4o Planning
+        ↓
+   LangGraph DAG
+   ┌─────────────┐
+   │ Query Index │ ──┐
+   └─────────────┘   │
+           ↓         │
+   ┌─────────────┐   │
+   │ Extract     │ ←─┘
+   │ Highlights  │
+   └─────────────┘
+           ↓
+   ┌─────────────┐
+   │ Apply Smart │
+   │ Cuts        │
+   └─────────────┘
+           ↓
+   ┌─────────────┐
+   │ Stitch      │
+   │ Segments    │
+   └─────────────┘
+           ↓
+   ┌─────────────┐
+   │ Final       │
+   │ Render      │
+   └─────────────┘
+```
+
+### Benefits for Video Editing
+- **Conditional Logic** - Workflows adapt based on video content and user requirements
+- **Parallel Processing** - Multiple video segments can be processed simultaneously
+- **State Persistence** - Long-running video processing jobs maintain state across interruptions
+- **Audit Trail** - Complete visibility into each step of the editing process
 
 ## Features
 
@@ -52,6 +101,7 @@ Once indexed, you can edit videos using natural language:
 
 ### Backend
 - **Node.js** + Express + TypeScript
+- **LangGraph** for DAG-based AI agent orchestration
 - **PostgreSQL** with pgvector extension
 - **Cloudflare R2** for video storage
 - **FFmpeg** for video processing
